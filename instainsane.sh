@@ -50,8 +50,13 @@ sleep 1
 start
 else
 default_wl_pass="passwords.lst"
-read -p $'\e[1;92mPassword List (Enter to default list): \e[0m' wl_pass
-wl_pass="${wl_pass:-${default_wl_pass}}"
+read -p $'\e[1;92mPassword List (Enter to default list): \e[0m' wl_pass_unescaped
+if [[ ! $wl_pass_unescaped ]]; then
+    wl_pass=${default_wl_pass}
+else
+    wl_pass="escaped.${wl_pass_unescaped}"
+    cat $wl_pass_unescaped | sort | uniq > $wl_pass
+fi
 default_threads="100"
 threads="${threads:-${default_threads}}"
 fi
